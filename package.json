@@ -1,8 +1,12 @@
 {
   "name": "gridboard",
   "version": "1.0.0",
-  "description": "Static grid for dashboards with movable widgets, based on jQuery",
+  "description": "Static grid for dashboards with movable widgets, based on jQuery. Inspired by GridStack.",
   "main": "dist/gridboard.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nulle/gridboard.git"
+  },
   "scripts": {
     "build": "node build",
     "test": "eslint ."

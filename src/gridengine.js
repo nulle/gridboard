@@ -254,6 +254,8 @@ class GridEngine {
 		let changedNodes = nodes.concat(this.getDirtyNodes());
 
 		this.onchange(changedNodes);
+
+		this.onNodePositionChange();
 	}
 
 	setNewPosition(node, x, y, width, height) {

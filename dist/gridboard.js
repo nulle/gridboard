@@ -316,6 +316,8 @@
   			var changedNodes = nodes.concat(this.getDirtyNodes());
 
   			this.onchange(changedNodes);
+
+  			this.onNodePositionChange();
   		}
   	}, {
   		key: "setNewPosition",
