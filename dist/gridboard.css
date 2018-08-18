@@ -1,0 +1,142 @@
+:root .gridboard-item .ui-resizable-handle {
+  filter: none;
+}
+.gridboard {
+  position: relative;
+}
+.gridboard .gridboard-item {
+  min-width: 8.3333333333%;
+  position: absolute;
+  padding: 0;
+}
+.gridboard .gridboard-item .gridboard-item-content {
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 10px;
+  right: 10px;
+  bottom: 0;
+  width: auto;
+  z-index: 0 !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.gridboard .gridboard-item .ui-resizable-handle {
+  position: absolute;
+  font-size: 0.1px;
+  display: block;
+  -ms-touch-action: none;
+  touch-action: none;
+}
+.gridboard .gridboard-item .ui-resizable-nw {
+  cursor: nw-resize;
+  width: 20px;
+  height: 20px;
+  left: 10px;
+  top: 0;
+}
+.gridboard .gridboard-item .ui-resizable-n {
+  cursor: n-resize;
+  height: 10px;
+  top: 0;
+  left: 25px;
+  right: 25px;
+}
+.gridboard .gridboard-item .ui-resizable-ne {
+  cursor: ne-resize;
+  width: 20px;
+  height: 20px;
+  right: 10px;
+  top: 0;
+}
+.gridboard .gridboard-item .ui-resizable-e {
+  cursor: e-resize;
+  width: 10px;
+  right: 10px;
+  top: 15px;
+  bottom: 15px;
+}
+.gridboard .gridboard-item .ui-resizable-se {
+  cursor: se-resize;
+  width: 20px;
+  height: 20px;
+  right: 10px;
+  bottom: 0;
+}
+.gridboard .gridboard-item .ui-resizable-s {
+  cursor: s-resize;
+  height: 10px;
+  left: 25px;
+  bottom: 0;
+  right: 25px;
+}
+.gridboard .gridboard-item .ui-resizable-sw {
+  cursor: sw-resize;
+  width: 20px;
+  height: 20px;
+  left: 10px;
+  bottom: 0;
+}
+.gridboard .gridboard-item .ui-resizable-w {
+  cursor: w-resize;
+  width: 10px;
+  left: 10px;
+  top: 15px;
+  bottom: 15px;
+}
+.gridboard .gridboard-item.ui-resizable-disabled .ui-resizable-handle,
+.gridboard .gridboard-item.ui-resizable-autohide .ui-resizable-handle {
+  display: none;
+}
+.gridboard .gridboard-item.ui-draggable-dragging,
+.gridboard .gridboard-item.ui-resizable-resizing {
+  z-index: 100;
+}
+.gridboard .gridboard-item.ui-draggable-dragging .gridboard-item-content,
+.gridboard .gridboard-item.ui-resizable-resizing .gridboard-item-content {
+  box-shadow: 1px 4px 6px rgba(0, 0, 0, 0.2);
+  opacity: 0.8;
+}
+.gridboard .gridboard-item.ui-draggable-dragging .ui-resizable-handle {
+  display: none !important;
+}
+.gridboard .gridboard-placeholder .placeholder-content {
+  border: 1px dashed lightgray;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 10px;
+  right: 10px;
+  bottom: 0;
+  width: auto;
+  z-index: 0 !important;
+  text-align: center;
+}
+.gridboard.gridboard-animate,
+.gridboard.gridboard-animate .gridboard-item {
+  -webkit-transition: left 0.3s, top 0.3s, height 0.3s, width 0.3s;
+  -moz-transition: left 0.3s, top 0.3s, height 0.3s, width 0.3s;
+  -ms-transition: left 0.3s, top 0.3s, height 0.3s, width 0.3s;
+  -o-transition: left 0.3s, top 0.3s, height 0.3s, width 0.3s;
+  transition: left 0.3s, top 0.3s, height 0.3s, width 0.3s;
+}
+.gridboard.gridboard-animate .gridboard-item.ui-draggable-dragging,
+.gridboard.gridboard-animate .gridboard-item.ui-resizable-resizing,
+.gridboard.gridboard-animate .gridboard-item.gridboard-placeholder {
+  -webkit-transition: left 0s, top 0s, height 0s, width 0s;
+  -moz-transition: left 0s, top 0s, height 0s, width 0s;
+  -ms-transition: left 0s, top 0s, height 0s, width 0s;
+  -o-transition: left 0s, top 0s, height 0s, width 0s;
+  transition: left 0s, top 0s, height 0s, width 0s;
+}
+.gridboard.gridboard-one-column-node .gridboard-item {
+  position: relative !important;
+  width: auto !important;
+  left: 0 !important;
+  top: auto !important;
+  margin-bottom: 20px;
+  max-width: none !important;
+}
+.gridboard.gridboard-one-column-node .gridboard-item .ui-resizable-handle {
+  display: none;
+}
