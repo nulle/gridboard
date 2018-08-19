@@ -60,6 +60,8 @@ class GridEngine {
 		this.nodes.push(node);
 
 		this.triggerChangeEvent();
+		this.onNodePositionChange();
+
 		return node;
 	}
 
@@ -95,6 +97,7 @@ class GridEngine {
 		node.id = null; // mark it for deletion
 		this.nodes = this.nodes.filter(n => n !== node);
 		this.triggerChangeEvent(node);
+		this.onNodePositionChange();
 	}
 
 	getNodeById(nodeId) {
@@ -171,10 +174,10 @@ class GridEngine {
 	}
 
 	isNodeChangedPosition(node, x, y, width, height) {
-		return !(  node.x == x
-				&& node.y == y
-				&& node.width == width
-				&& node.height == height
+		return !(  node.x === x
+				&& node.y === y
+				&& node.width === width
+				&& node.height === height
 			);
 	}
 
@@ -254,8 +257,6 @@ class GridEngine {
 		let changedNodes = nodes.concat(this.getDirtyNodes());
 
 		this.onchange(changedNodes);
-
-		this.onNodePositionChange();
 	}
 
 	setNewPosition(node, x, y, width, height) {

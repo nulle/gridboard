@@ -95,6 +95,8 @@
   			this.nodes.push(node);
 
   			this.triggerChangeEvent();
+  			this.onNodePositionChange();
+
   			return node;
   		}
   	}, {
@@ -136,6 +138,7 @@
   				return n !== node;
   			});
   			this.triggerChangeEvent(node);
+  			this.onNodePositionChange();
   		}
   	}, {
   		key: "getNodeById",
@@ -230,7 +233,7 @@
   	}, {
   		key: "isNodeChangedPosition",
   		value: function isNodeChangedPosition(node, x, y, width, height) {
-  			return !(node.x == x && node.y == y && node.width == width && node.height == height);
+  			return !(node.x === x && node.y === y && node.width === width && node.height === height);
   		}
   	}, {
   		key: "fixOverlappingPositions",
@@ -316,8 +319,6 @@
   			var changedNodes = nodes.concat(this.getDirtyNodes());
 
   			this.onchange(changedNodes);
-
-  			this.onNodePositionChange();
   		}
   	}, {
   		key: "setNewPosition",
@@ -702,7 +703,7 @@
   			var value = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
   			el = $(el);
-  			if (opts === 'disable' || opts === 'enable') {
+  			if (['disable', 'enable', 'destroy'].includes(opts)) {
   				el.resizable(opts);
   			} else if (opts === 'option') {
   				el.resizable(opts, key, value);
@@ -720,7 +721,7 @@
   		key: 'draggable',
   		value: function draggable(el, opts) {
   			el = $(el);
-  			if (opts === 'disable' || opts === 'enable') {
+  			if (['disable', 'enable', 'destroy'].includes(opts)) {
   				el.draggable(opts);
   			} else {
   				el.draggable(Object.assign({}, this.grid.opts.draggable, {
@@ -736,7 +737,7 @@
   		key: 'droppable',
   		value: function droppable(el, opts) {
   			el = $(el);
-  			if (opts === 'disable' || opts === 'enable') {
+  			if (['disable', 'enable', 'destroy'].includes(opts)) {
   				el.droppable(opts);
   			} else {
   				el.droppable({
@@ -756,6 +757,25 @@
   		value: function on(el, eventName, callback) {
   			$(el).on(eventName, callback);
   			return this;
+  		}
+  	}, {
+  		key: 'destroy',
+  		value: function destroy(el) {
+  			try {
+  				this.resizable(el, 'destroy');
+  			} catch (e) {
+  				//skip
+  			}
+  			try {
+  				this.draggable(el, 'destroy');
+  			} catch (e) {
+  				//skip
+  			}
+  			try {
+  				this.droppable(el, 'destroy');
+  			} catch (e) {
+  				//skip
+  			}
   		}
   	}]);
   	return GridBoardJQueryUI;
@@ -978,6 +998,8 @@
   			var detachContainer = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
   			this.container.off('resize', this.onResize);
+  			this.container.off('dropover dropout drop');
+  			this.dd.destroy(this.container);
 
   			this._setMoveEvents(false);
   			this._setResizeEvents(false);
@@ -1012,6 +1034,13 @@
   			};
 
   			return this._getCellFromPixel(nodeOffset);
+  		}
+  	}, {
+  		key: 'getAdjustedNodeProps',
+  		value: function getAdjustedNodeProps(x, y, width, height) {
+  			// can be overwritten from outside
+  			// useful when need to change placeholder width and height depending on the current coordinates
+  			return { x: x, y: y, width: width, height: height };
   		}
   	}, {
   		key: '_getCellFromPixel',
@@ -1343,13 +1372,20 @@
 
   				var el = draggingElement;
   				var node = el.data(self.dataPrefix + 'node');
-  				var pos = self._getCellFromPixel({
+  				var cell = self._getCellFromPixel({
   					left: event.pageX,
   					top: event.pageY
   				}, true);
 
+  				var originalWidth = parseInt(el.attr('data-width'), 10) || 1;
+  				var originalHeight = parseInt(el.attr('data-height'), 10) || 1;
+
+  				var pos = self.getAdjustedNodeProps(cell.x, cell.y, originalWidth, originalHeight);
+
   				var x = Math.max(0, pos.x);
   				var y = Math.max(0, pos.y);
+  				var width = pos.width;
+  				var height = pos.height;
 
   				// not added
   				if (!node._added) {
@@ -1357,6 +1393,9 @@
   					node.el = el;
   					node.x = x;
   					node.y = y;
+
+  					node.width = width;
+  					node.height = height;
 
   					if (!self.grid.canAddNode(node)) {
   						return;
@@ -1381,7 +1420,7 @@
   					node.el = self.placeholder;
   				}
 
-  				self.grid.moveNode(node, x, y, node.width, node.height);
+  				self.grid.moveNode(node, x, y, width, height);
   			};
 
   			this.dd.droppable(self.container, {

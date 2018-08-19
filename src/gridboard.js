@@ -153,6 +153,8 @@ class GridBoard {
 
 	destroy(detachContainer = false) {
 		this.container.off('resize', this.onResize);
+		this.container.off('dropover dropout drop');
+		this.dd.destroy(this.container);
 
 		this._setMoveEvents(false);
 		this._setResizeEvents(false);
@@ -184,6 +186,12 @@ class GridBoard {
 		};
 
 		return this._getCellFromPixel(nodeOffset);
+	}
+
+	getAdjustedNodeProps(x, y, width, height) {
+		// can be overwritten from outside
+		// useful when need to change placeholder width and height depending on the current coordinates
+		return {x, y, width, height};
 	}
 
 	_getCellFromPixel(position, useOffset) {
@@ -527,13 +535,20 @@ class GridBoard {
 
 			let el = draggingElement;
 			let node = el.data(self.dataPrefix + 'node');
-			let pos = self._getCellFromPixel({
+			let cell = self._getCellFromPixel({
 				left: event.pageX,
 				top: event.pageY
 			}, true);
 
+			let originalWidth = parseInt(el.attr('data-width'), 10) || 1;
+			let originalHeight = parseInt(el.attr('data-height'), 10) || 1;
+
+			let pos = self.getAdjustedNodeProps(cell.x, cell.y, originalWidth, originalHeight);
+
 			let x = Math.max(0, pos.x);
 			let y = Math.max(0, pos.y);
+			let width = pos.width;
+			let height = pos.height;
 
 			// not added
 			if (!node._added) {
@@ -541,6 +556,9 @@ class GridBoard {
 				node.el = el;
 				node.x = x;
 				node.y = y;
+
+				node.width = width;
+				node.height = height;
 
 				if (!self.grid.canAddNode(node)) {
 					return;
@@ -565,7 +583,7 @@ class GridBoard {
 				node.el = self.placeholder;
 			}
 
-			self.grid.moveNode(node, x, y, node.width, node.height);
+			self.grid.moveNode(node, x, y, width, height);
 
 		};
 

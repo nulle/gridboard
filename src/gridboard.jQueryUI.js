@@ -9,7 +9,7 @@ class GridBoardJQueryUI {
 
 	resizable(el, opts, key = null, value = null) {
 		el = $(el);
-		if (opts === 'disable' || opts === 'enable') {
+		if (['disable', 'enable', 'destroy'].includes(opts)) {
 			el.resizable(opts);
 		} else if (opts === 'option') {
 			el.resizable(opts, key, value);
@@ -26,7 +26,7 @@ class GridBoardJQueryUI {
 
 	draggable(el, opts) {
 		el = $(el);
-		if (opts === 'disable' || opts === 'enable') {
+		if (['disable', 'enable', 'destroy'].includes(opts)) {
 			el.draggable(opts);
 		} else {
 			el.draggable(Object.assign({}, this.grid.opts.draggable, {
@@ -41,7 +41,7 @@ class GridBoardJQueryUI {
 
 	droppable(el, opts) {
 		el = $(el);
-		if (opts === 'disable' || opts === 'enable') {
+		if (['disable', 'enable', 'destroy'].includes(opts)) {
 			el.droppable(opts);
 		} else {
 			el.droppable({
@@ -59,6 +59,24 @@ class GridBoardJQueryUI {
 	on(el, eventName, callback) {
 		$(el).on(eventName, callback);
 		return this;
+	}
+
+	destroy(el) {
+		try {
+			this.resizable(el, 'destroy');
+		} catch (e) {
+			//skip
+		}
+		try {
+			this.draggable(el, 'destroy');
+		} catch (e) {
+			//skip
+		}
+		try {
+			this.droppable(el, 'destroy');
+		} catch (e) {
+			//skip
+		}
 	}
 }
 
