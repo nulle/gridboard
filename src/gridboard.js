@@ -302,6 +302,7 @@ class GridBoard {
 		onStartMoving = function(event, ui) {
 
 			self.container.append(self.placeholder);
+			self.container.addClass('drag-or-drop-hover');
 
 			let o = $(this);
 
@@ -328,6 +329,8 @@ class GridBoard {
 		};
 
 		onEndMoving = function() {
+
+			self.container.removeClass('drag-or-drop-hover');
 
 			let o = $(this);
 

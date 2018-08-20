@@ -1138,6 +1138,7 @@
   			onStartMoving = function onStartMoving(event, ui) {
 
   				self.container.append(self.placeholder);
+  				self.container.addClass('drag-or-drop-hover');
 
   				var o = $(this);
 
@@ -1164,6 +1165,8 @@
   			};
 
   			onEndMoving = function onEndMoving() {
+
+  				self.container.removeClass('drag-or-drop-hover');
 
   				var o = $(this);
 
