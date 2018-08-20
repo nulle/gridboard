@@ -440,8 +440,6 @@ class GridBoard {
 				props.y = freeSpace.y;
 				props.width = freeSpace.w;
 				props.height = freeSpace.h;
-			} else {
-				return;
 			}
 		}
 
