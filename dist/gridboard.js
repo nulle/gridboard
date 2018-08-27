@@ -803,6 +803,8 @@
 
   	Stylesheet: Stylesheet,
 
+  	// from https://dustinpfister.github.io/2017/10/20/lodash_throttle/
+  	// usage: var f = throttle(function(){/* do something */}, 1000); setTimeout(f, 100);
   	throttle: function throttle(fn, ms) {
   		var called = Date.now(),
   		    throttleFn = void 0;
@@ -813,12 +815,34 @@
   		throttleFn = function throttleFn() {
   			var now = Date.now();
   			if (now - called >= ms) {
-  				fn();
+  				fn.apply(undefined, arguments);
   				called = now;
   			}
   		};
 
   		return throttleFn;
+  	},
+
+
+  	// from https://davidwalsh.name/javascript-debounce-function
+  	// Returns a function, that, as long as it continues to be invoked, will not
+  	// be triggered. The function will be called after it stops being called for
+  	// N milliseconds. If `immediate` is passed, trigger the function on the
+  	// leading edge, instead of the trailing.
+  	debounce: function debounce(func, wait, immediate) {
+  		var timeout;
+  		return function () {
+  			var context = this,
+  			    args = arguments;
+  			var later = function later() {
+  				timeout = null;
+  				if (!immediate) func.apply(context, args);
+  			};
+  			var callNow = immediate && !timeout;
+  			clearTimeout(timeout);
+  			timeout = setTimeout(later, wait);
+  			if (callNow) func.apply(context, args);
+  		};
   	},
   	removePositioningStyles: function removePositioningStyles(el) {
   		var style = el[0].style;
@@ -997,7 +1021,7 @@
 
   			var detachContainer = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-  			this.container.off('resize', this.onResize);
+  			this.container.off('resize.gridboard', this.onResize);
   			this.container.off('dropover dropout drop');
   			this.dd.destroy(this.container);
 
@@ -1133,6 +1157,8 @@
   				}
 
   				self.grid.moveNode(node, x, y, width, height);
+
+  				event.stopPropagation(); // dnno why it's not working
   			};
 
   			onStartMoving = function onStartMoving(event, ui) {
@@ -1335,7 +1361,13 @@
   			var self = this,
   			    oneColumnMode = self._isOneColumnMode();
 
-  			this.onResize = Utils.throttle(function () {
+  			this.onResize = function (e) {
+
+  				// ignore events bubbled from resizable nodes
+  				if ($(e.target).hasClass('ui-resizable')) {
+  					return;
+  				}
+
   				self._setCellSize();
 
   				var isOneColumnAfterResize = self._isOneColumnMode();
@@ -1357,9 +1389,9 @@
   						this._setResizeEvents(true);
   					}
   				}
-  			}, 200);
+  			};
 
-  			this.container.on('resize', this.onResize);
+  			this.container.on('resize.gridboard', this.onResize);
   		}
   	}, {
   		key: '_bindExternalDragNDropHandler',

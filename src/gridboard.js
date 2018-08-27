@@ -152,7 +152,7 @@ class GridBoard {
 	}
 
 	destroy(detachContainer = false) {
-		this.container.off('resize', this.onResize);
+		this.container.off('resize.gridboard', this.onResize);
 		this.container.off('dropover dropout drop');
 		this.dd.destroy(this.container);
 
@@ -296,6 +296,8 @@ class GridBoard {
 			}
 
 			self.grid.moveNode(node, x, y, width, height);
+
+			event.stopPropagation(); // dnno why it's not working
 
 		};
 
@@ -498,7 +500,13 @@ class GridBoard {
 		let self = this,
 			oneColumnMode = self._isOneColumnMode();
 
-		this.onResize = Utils.throttle(function(){
+		this.onResize = function(e){
+
+			// ignore events bubbled from resizable nodes
+			if ($(e.target).hasClass('ui-resizable')) {
+				return;
+			}
+
 			self._setCellSize();
 
 			let isOneColumnAfterResize = self._isOneColumnMode();
@@ -520,10 +528,9 @@ class GridBoard {
 					this._setResizeEvents(true);
 				}
 			}
+		};
 
-		}, 200);
-
-		this.container.on('resize', this.onResize);
+		this.container.on('resize.gridboard', this.onResize);
 	}
 
 	_bindExternalDragNDropHandler() {
