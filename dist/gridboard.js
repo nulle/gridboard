@@ -1499,6 +1499,11 @@
   			}).on(self.container, 'drop', function (event, ui) {
 
   				var node = $(ui.draggable).data(self.dataPrefix + 'node');
+
+  				if (!self.grid.canAddNode(node)) {
+  					return;
+  				}
+
   				self.placeholder.detach();
 
   				if (node) {
