@@ -308,8 +308,15 @@ class GridEngine {
 
 		clonedNode = clonedGrid.nodes.find(n => n.id === node.id);
 
+		var unmovableNodes = [];
+		clonedGrid.nodes.forEach(function (n) {
+			if (n.noMove) {
+				unmovableNodes.push(n.id);
+			}
+		});
+
 		let changes = null,
-			results = clonedGrid._findPos(node, x, y, width, height);
+			results = clonedGrid._findPos(node, x, y, width, height, unmovableNodes);
 
 		if (results === null && clonedGrid.allowFallbackResize) {
 			// if cannot achieve the position with just moving other blocks, try ONE resize
@@ -344,46 +351,49 @@ class GridEngine {
 				howWideCanCNodeStay = 0,
 				howHighCanCNodeStay = 0;
 
-			if (cNode.y < y) {
-				howHighCanCNodeStay = y - cNode.y;
-			} else {
-				howHighCanCNodeStay = Math.max(0, (cNode.y + cNode.height) - (y + height));
-			}
+			if (!cNode.noResize) {
 
-			if (cNode.x < x) {
-				howWideCanCNodeStay = x - cNode.x;
-			} else {
-				howWideCanCNodeStay = Math.max(0, (cNode.x + cNode.width) - (x + width));
-			}
-
-			if (howWideCanCNodeStay > 0 || howHighCanCNodeStay > 0) {
-				// find direction where collision node is losing less squares
-				let lostSquaresIfReducingWidth = (cNode.width - howWideCanCNodeStay) * cNode.height;
-				let lostSquaresIfReducingHeight = (cNode.height - howHighCanCNodeStay) * cNode.width;
-
-				if (lostSquaresIfReducingHeight < lostSquaresIfReducingWidth) {
-					// reduce height
-					cNode.height = howHighCanCNodeStay;
-					if (cNode.y >= y) {
-						cNode.y = y + height;
-					}
+				if (cNode.y < y) {
+					howHighCanCNodeStay = y - cNode.y;
 				} else {
-					// reduce width
-					cNode.width = howWideCanCNodeStay;
-					if (cNode.x >= x) {
-						cNode.x = x + width;
-					}
+					howHighCanCNodeStay = Math.max(0, (cNode.y + cNode.height) - (y + height));
 				}
 
-				clonedNode.x = x;
-				clonedNode.y = y;
-				clonedNode.width = width;
-				clonedNode.height = height;
+				if (cNode.x < x) {
+					howWideCanCNodeStay = x - cNode.x;
+				} else {
+					howWideCanCNodeStay = Math.max(0, (cNode.x + cNode.width) - (x + width));
+				}
 
-				if (this.isPositionValid(cNode.x, cNode.y, cNode.width, cNode.height)) {
-					results = {
-						grid: this
-					};
+				if (howWideCanCNodeStay > 0 || howHighCanCNodeStay > 0) {
+					// find direction where collision node is losing less squares
+					let lostSquaresIfReducingWidth = (cNode.width - howWideCanCNodeStay) * cNode.height;
+					let lostSquaresIfReducingHeight = (cNode.height - howHighCanCNodeStay) * cNode.width;
+
+					if (lostSquaresIfReducingHeight < lostSquaresIfReducingWidth) {
+						// reduce height
+						cNode.height = howHighCanCNodeStay;
+						if (cNode.y >= y) {
+							cNode.y = y + height;
+						}
+					} else {
+						// reduce width
+						cNode.width = howWideCanCNodeStay;
+						if (cNode.x >= x) {
+							cNode.x = x + width;
+						}
+					}
+
+					clonedNode.x = x;
+					clonedNode.y = y;
+					clonedNode.width = width;
+					clonedNode.height = height;
+
+					if (this.isPositionValid(cNode.x, cNode.y, cNode.width, cNode.height)) {
+						results = {
+							grid: this
+						};
+					}
 				}
 			}
 		}
