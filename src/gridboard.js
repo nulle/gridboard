@@ -427,6 +427,8 @@ class GridBoard {
 			maxHeight: getNumericAttr(el, 'max-height') || this.opts.height,
 			minHeight: getNumericAttr(el, 'min-height') || 1,
 			resizeHandles: getAttr(el, 'resize-handles'),
+			noMove: getAttr(el, 'no-move') === 'true',
+			noResize: getAttr(el, 'no-resize') === 'true',
 			el: el,
 			id: getAttr(el, 'id'),
 			_grid: this
