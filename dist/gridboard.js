@@ -1200,7 +1200,7 @@
   				}
   			};
 
-  			onEndMoving = function onEndMoving() {
+  			onEndMoving = function onEndMoving(event, ui) {
 
   				self.container.removeClass('drag-or-drop-hover');
 
@@ -1227,6 +1227,10 @@
   				self._triggerChangeEvent();
 
   				self.grid.saveUpdate();
+
+  				if (typeof self.opts.draggable.stop === 'function') {
+  					self.opts.draggable.stop(event, ui);
+  				}
   			};
 
   			this.dd.draggable(el, {
