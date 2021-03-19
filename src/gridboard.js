@@ -330,7 +330,7 @@ class GridBoard {
 			}
 		};
 
-		onEndMoving = function() {
+		onEndMoving = function(event, ui) {
 
 			self.container.removeClass('drag-or-drop-hover');
 
@@ -357,6 +357,10 @@ class GridBoard {
 			self._triggerChangeEvent();
 
 			self.grid.saveUpdate();
+
+			if (typeof self.opts.draggable.stop === 'function') {
+				self.opts.draggable.stop(event, ui);
+			}
 		};
 
 		this.dd
