@@ -436,7 +436,7 @@
   						howWideCanCNodeStay = Math.max(0, cNode.x + cNode.width - (x + width));
   					}
 
-  					if (howWideCanCNodeStay > 0 || howHighCanCNodeStay > 0) {
+  					if (howWideCanCNodeStay >= cNode.minWidth || howHighCanCNodeStay > cNode.minHeight) {
   						// find direction where collision node is losing less squares
   						var lostSquaresIfReducingWidth = (cNode.width - howWideCanCNodeStay) * cNode.height;
   						var lostSquaresIfReducingHeight = (cNode.height - howHighCanCNodeStay) * cNode.width;
