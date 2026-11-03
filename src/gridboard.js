@@ -648,6 +648,11 @@ class GridBoard {
 			})
 			.on(self.container, 'drop', function(event, ui) {
 
+				// a native HTML5 drop (e.g. a file dragged onto the grid) fires this too, without ui
+				if (!ui) {
+					return;
+				}
+
 				let node = $(ui.draggable).data(self.dataPrefix + 'node');
 
 				if (!self.grid.canAddNode(node)) {
